@@ -1,0 +1,15 @@
+{
+    "apps": [
+        {
+            "name": "vcc-monitor-geth",
+            "script": "dist/index.js",
+            "env": {
+                "WARNING_MESSAGES": "test",
+                "FILE": "",
+                "MAIL_USERNAME": "",
+                "MAIL_PASSWORD": "",
+                "MAIL_RECIPIENT": ""
+            }
+        }
+    ]
+}
