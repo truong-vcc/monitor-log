@@ -99,7 +99,8 @@ var FileWatcher = (function (_super) {
         if (!process.env.WARNING_MESSAGES) {
             throw new Error('WARNING_MESSAGES is required');
         }
-        _this._warnings = process.env.WARNING_MESSAGES.split(',');
+        var warnings = process.env.WARNING_MESSAGES.split(',');
+        _this._warnings = warnings.map(function (warning) { return warning.toLowerCase(); });
         return _this;
     }
     FileWatcher.prototype.attach = function (notifer) {
@@ -118,15 +119,15 @@ var FileWatcher = (function (_super) {
                 switch (_a.label) {
                     case 0: return [4, read_last_lines_1.default.read(filePath, 1)];
                     case 1:
-                        content = _a.sent();
+                        content = (_a.sent()).toLowerCase();
                         logger.debug("FileWatcher::watchFile File: " + filePath + " has been updated. Content changes: " + content);
                         tasks = lodash_1.default.map(this._warnings, function (warning) { return __awaiter(_this, void 0, void 0, function () {
                             var success, error_1;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        if (!content.includes(warning)) return [3, 6];
-                                        if (!!this._cacheWarningMsg.has(warning)) return [3, 5];
+                                        if (!content.includes(warning)) return [3, 4];
+                                        if (!!this._cacheWarningMsg.has(warning)) return [3, 4];
                                         _a.label = 1;
                                     case 1:
                                         _a.trys.push([1, 3, , 4]);
@@ -149,11 +150,7 @@ var FileWatcher = (function (_super) {
                                         logger.error(error_1);
                                         this._cacheWarningMsg.del(warning);
                                         return [3, 4];
-                                    case 4: return [3, 6];
-                                    case 5:
-                                        logger.info("FileWatcher::watchFile " + warning + " - This warning has been sent, please wait until it is handled.");
-                                        _a.label = 6;
-                                    case 6: return [2];
+                                    case 4: return [2];
                                 }
                             });
                         }); });
