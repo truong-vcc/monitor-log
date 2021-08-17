@@ -87,8 +87,6 @@ export class FileWatcher extends EventEmitter {
                             //If notification activation fails, clear the warning from the cache so it can be sent again
                             this._cacheWarningMsg.del(warning);
                         }
-                    } else {
-                        logger.info(`FileWatcher::watchFile ${warning} - This warning has been sent, please wait until it is handled.`)
                     }
                 }
             })
