@@ -32,11 +32,13 @@ export class FileWatcher extends EventEmitter {
             max: 1024,
             maxAge: 1000 * 60 * 60 * 24  // 1 day
         });
-        //
+        
         if (!process.env.WARNING_MESSAGES) {
             throw new Error('WARNING_MESSAGES is required');
         }
-        this._warnings = (process.env.WARNING_MESSAGES as string).split(',');
+        //data cleaning
+        const warnings = (process.env.WARNING_MESSAGES as string).split(',');
+        this._warnings = warnings.map(warning => warning.toLowerCase());
     }
 
     /**
@@ -60,7 +62,7 @@ export class FileWatcher extends EventEmitter {
 
         //listen when file has been added
         watcher.on('change', async (filePath) => {
-            const content = await readLastLines.read(filePath, 1);
+            const content = (await readLastLines.read(filePath, 1)).toLowerCase();
             logger.debug(`FileWatcher::watchFile File: ${filePath} has been updated. Content changes: ${content}`);
 
             const tasks = _.map(this._warnings, async (warning) => {
@@ -85,8 +87,6 @@ export class FileWatcher extends EventEmitter {
                             //If notification activation fails, clear the warning from the cache so it can be sent again
                             this._cacheWarningMsg.del(warning);
                         }
-                    } else {
-                        logger.info(`FileWatcher::watchFile ${warning} - This warning has been sent, please wait until it is handled.`)
                     }
                 }
             })
